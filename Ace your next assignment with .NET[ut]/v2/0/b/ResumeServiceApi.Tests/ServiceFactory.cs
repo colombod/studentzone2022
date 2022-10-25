@@ -14,7 +14,7 @@ internal class ServiceFactory
                 services.ReplaceWithInMemoryDbContext<ResumeDb>();
             });
         });
-        ;
+        
         builder.CreateClient().GetAsync("/");
         return builder;
     }
