@@ -1,0 +1,60 @@
+#!csharp
+
+#r "nuget: System.Reactive, 5.0.0"
+
+#!csharp
+
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Collections.Generic;
+
+#!csharp
+
+// we sample at constant rate, so we only care to define sliding widow as a sample size and not time interval
+public class MovingAverage : IObservable<double>
+{
+    private readonly Subject<double> _subject = new();
+    private readonly IObservable<double> _movingWindow;
+
+    public MovingAverage(int windowSizeInSamples)
+    {
+        _movingWindow = _subject
+            .Buffer(windowSizeInSamples, 1)           // sliding window of size windowSizeInSamples that slides of 1 value
+            .Select(b => b.Average());              // calculate the average of the window
+    }
+
+    public void PushSample(double sample)
+    {
+        _subject.OnNext(sample);
+    }
+
+    public IDisposable Subscribe(IObserver<double> observer)
+    {
+        return _movingWindow.Subscribe(observer);
+    }
+}
+
+#!csharp
+
+public class MovingAverage{
+    private int _windowSize;
+    public double Average { get; private set; }
+    private readonly Queue<double> _samples = new Queue<double>();
+    
+    public MovingAverage(int windowSizeInSamples)
+    {
+        _windowSize = windowSizeInSamples;
+        Average = double.NaN;
+    }
+
+    public void PushSample(double sample)
+    {
+       _samples.Enqueue(sample);
+       if(_samples.Count > _windowSize)
+       {
+           _samples.Dequeue();
+           Average = _samples.Average();
+       }
+    }
+}

@@ -137,15 +137,32 @@ app.UseSwaggerUI(c =>
 
 app.MapGet("/resume", GetResumes);
 
+List<Resume> GetResumes(ResumeDb resumeDb)
+{
+    
+    return new List<Resume>();
+}
+
+List<Resume> GetResumes(ResumeDb resumeDb)
+{    
+    var ret = resumes = resumeDb.Resumes
+        .Include(r => r.Skills)
+        .Include(r => r.Educations)
+        .Include(r => r.Experiences)
+        .ToList();
+    return ret;
+}
+
+
 List<Resume> GetResumes(ResumeDb resumeDb, string? byUser)
 {
-    IQueryable<Resume> filter = resumeDb.Resumes;
+    IQueryable<Resume> resumes = resumeDb.Resumes;
     if (!string.IsNullOrEmpty(byUser))
     {
-        filter = resumeDb.Resumes.Where(r => r.Name == byUser);
+        resumes = resumeDb.Resumes.Where(r => r.Name == byUser);
     }
 
-    var ret = filter
+    var ret = resumes
         .Include(r => r.Skills)
         .Include(r => r.Educations)
         .Include(r => r.Experiences)
