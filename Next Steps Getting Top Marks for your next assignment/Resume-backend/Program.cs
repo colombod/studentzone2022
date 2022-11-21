@@ -1,7 +1,6 @@
 using Microsoft.OpenApi.Models;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("Resumes") ?? "Data Source=Resumes.db";

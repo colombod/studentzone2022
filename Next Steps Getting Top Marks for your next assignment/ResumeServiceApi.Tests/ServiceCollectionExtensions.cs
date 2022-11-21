@@ -8,6 +8,7 @@ internal static class ServiceCollectionExtensions
     public static IServiceCollection ReplaceWithInMemoryDbContext<TContext>(this IServiceCollection services)
         where TContext : DbContext
     {
+
         if (services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<TContext>)) is { } descriptor)
 
         {
